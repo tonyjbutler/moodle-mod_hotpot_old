@@ -91,7 +91,7 @@ function xmldb_hotpot_upgrade($oldversion) {
         );
 
         // fix previous fields (remove them if they don't exist)
-        xmldb_hotpot_fix_previous_field($dbman, $table, $fields);
+        xmldb_hotpot_fix_previous_fields($dbman, $table, $fields);
 
         foreach ($fields as $newname => $field) {
             if ($dbman->field_exists($table, $field)) {
@@ -141,7 +141,7 @@ function xmldb_hotpot_upgrade($oldversion) {
         );
 
         // fix previous fields (remove them if they don't exist)
-        xmldb_hotpot_fix_previous_field($dbman, $table, $fields);
+        xmldb_hotpot_fix_previous_fields($dbman, $table, $fields);
 
         foreach ($fields as $field) {
             if (! $dbman->field_exists($table, $field)) {
@@ -286,7 +286,7 @@ function xmldb_hotpot_upgrade($oldversion) {
         );
 
         // fix previous fields (remove them if they don't exist)
-        xmldb_hotpot_fix_previous_field($dbman, $table, $fields);
+        xmldb_hotpot_fix_previous_fields($dbman, $table, $fields);
 
         foreach ($fields as $field) {
             if ($dbman->field_exists($table, $field)) {
@@ -330,7 +330,7 @@ function xmldb_hotpot_upgrade($oldversion) {
             $table = new xmldb_table($tablename);
 
             // fix previous fields (remove them if they don't exist)
-            xmldb_hotpot_fix_previous_field($dbman, $table, $fields);
+            xmldb_hotpot_fix_previous_fields($dbman, $table, $fields);
 
             foreach ($fields as $field) {
                 if ($dbman->field_exists($table, $field)) {
@@ -628,22 +628,6 @@ function xmldb_hotpot_upgrade($oldversion) {
         upgrade_mod_savepoint(true, "$newversion", 'hotpot');
     }
 
-    $newversion = 2010080327;
-    if ($oldversion < $newversion) {
-        $table = new xmldb_table('hotpot');
-        $field = new xmldb_field('exitgrade', XMLDB_TYPE_INTEGER, '6', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, '0', 'exitcm');
-        if (! $dbman->field_exists($table, $field)) {
-            $dbman->add_field($table, $field);
-        }
-        upgrade_mod_savepoint(true, "$newversion", 'hotpot');
-    }
-
-    $newversion = 2010080329;
-    if ($oldversion < $newversion) {
-        $empty_cache = true;
-        upgrade_mod_savepoint(true, "$newversion", 'hotpot');
-    }
-
     $newversion = 2010080330;
     if ($oldversion < $newversion) {
         require_once($CFG->dirroot.'/mod/hotpot/lib.php');
@@ -656,6 +640,60 @@ function xmldb_hotpot_upgrade($oldversion) {
         upgrade_mod_savepoint(true, "$newversion", 'hotpot');
     }
 
+    $newversion = 2010080338;
+    if ($oldversion < $newversion) {
+        $empty_cache = true;
+        upgrade_mod_savepoint(true, "$newversion", 'hotpot');
+    }
+
+    $newversion = 2010080339;
+    if ($oldversion < $newversion) {
+        $table = new xmldb_table('hotpot');
+        $field = new xmldb_field('exitgrade', XMLDB_TYPE_INTEGER, '6', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, '0', 'exitcm');
+        xmldb_hotpot_fix_previous_field($dbman, $table, $field);
+        if (! $dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        upgrade_mod_savepoint(true, "$newversion", 'hotpot');
+    }
+
+    $newversion = 2010080340;
+    if ($oldversion < $newversion) {
+
+        // force all text fields to be long text, the default for Moodle 2.3 and later
+        $tables = array(
+            'hotpot' => array(
+                new xmldb_field('entrytext', XMLDB_TYPE_TEXT, 'long', null, XMLDB_NOTNULL),
+                new xmldb_field('exittext', XMLDB_TYPE_TEXT, 'long', null, XMLDB_NOTNULL)
+            ),
+            'hotpot_cache' => array(
+                new xmldb_field('content', XMLDB_TYPE_TEXT, 'long', null, XMLDB_NOTNULL)
+            ),
+            'hotpot_details' => array(
+                new xmldb_field('details', XMLDB_TYPE_TEXT, 'long', null, XMLDB_NOTNULL)
+            ),
+            'hotpot_questions' => array(
+                new xmldb_field('name', XMLDB_TYPE_TEXT, 'long', null, XMLDB_NOTNULL)
+            ),
+            'hotpot_strings' => array(
+                new xmldb_field('string', XMLDB_TYPE_TEXT, 'long', null, XMLDB_NOTNULL)
+            )
+        );
+
+        foreach ($tables as $tablename => $fields) {
+            $table = new xmldb_table($tablename);
+            foreach ($fields as $field) {
+                if ($dbman->field_exists($table, $field)) {
+                    $fieldname = $field->getName();
+                    $DB->set_field_select($tablename, $fieldname, '', "$fieldname IS NULL");
+                    $dbman->change_field_type($table, $field);
+                }
+            }
+        }
+
+        upgrade_mod_savepoint(true, "$newversion", 'hotpot');
+    }
+
     if ($empty_cache) {
         $DB->delete_records('hotpot_cache');
     }
@@ -664,22 +702,32 @@ function xmldb_hotpot_upgrade($oldversion) {
 }
 
 /**
- * xmldb_hotpot_fix_previous_field
+ * xmldb_hotpot_fix_previous_fields
  *
  * @param xxx $dbman
  * @param xxx $table
  * @param xxx $fields (passed by reference)
  * @return xxx
  */
-function xmldb_hotpot_fix_previous_field($dbman, $table, &$fields) {
+function xmldb_hotpot_fix_previous_fields($dbman, $table, &$fields) {
     foreach ($fields as $i => $field) {
-        if (empty($field->previous)) {
-            continue; // no previous field
-        }
-        if ($dbman->field_exists($table, $field->previous)) {
-            continue; // previous field exists
-        }
-        // previous field does not exist, so remove it
-        $fields[$i]->previous = null;
+        xmldb_hotpot_fix_previous_field($dbman, $table, $fields[$i]);
+    }
+}
+
+/**
+ * xmldb_hotpot_fix_previous_field
+ *
+ * @param xxx $dbman
+ * @param xxx $table
+ * @param xxx $field (passed by reference)
+ * @return xxx
+ */
+function xmldb_hotpot_fix_previous_field($dbman, $table, &$field) {
+    if (empty($field->previous) || $dbman->field_exists($table, $field->previous)) {
+        // previous field exists - do nothing
+    } else {
+        // previous field does not exist, so remove it from the field definition
+        $field->previous = null;
     }
 }

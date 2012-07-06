@@ -133,7 +133,7 @@ class hotpot_source_hp extends hotpot_source {
                     }
                 }
             }
-            $textlib = textlib_get_instance();
+            $textlib = hotpot_get_textlib();
             $this->name = $textlib->entities_to_utf8($this->name, true);
             $this->title = $textlib->entities_to_utf8($this->title, true);
         }
@@ -210,7 +210,7 @@ class hotpot_source_hp extends hotpot_source {
                 // could not detect Hot Potatoes quiz type - shouldn't happen !!
                 return false;
             }
-            $textlib = textlib_get_instance();
+            $textlib = hotpot_get_textlib();
             $this->title = $this->xml_value('data,title');
             $this->title = $textlib->entities_to_utf8($this->title, true);
             $this->name = trim(strip_tags($this->title)); // sanitize
@@ -478,7 +478,7 @@ class hotpot_source_hp extends hotpot_source {
 
             // encode unicode characters as HTML entities
             // (in particular, accented charaters that have not been encoded by HP)
-            $textlib = textlib_get_instance();
+            $textlib = hotpot_get_textlib();
             $value = $textlib->utf8_to_entities($value);
         }
         return $value;
@@ -585,7 +585,7 @@ class hotpot_source_hp extends hotpot_source {
 
         // convert (hex and decimal) html entities to javascript unicode, if required
         if ($convert_to_unicode) {
-            $textlib = textlib_get_instance();
+            $textlib = hotpot_get_textlib();
             $str = $textlib->utf8_to_entities($str, false, true);
 
             $search = '/&#x([0-9A-F]+);/i';

@@ -64,12 +64,13 @@ class hotpot_report_table extends table_sql {
     }
 
     /**
-     * setup
+     * setup_report_table
      *
      * @param xxx $tablecolumns
      * @param xxx $baseurl
+     * @param xxx $usercount (optional, default value = 10)
      */
-    function setup($tablecolumns, $baseurl, $usercount = 10)  {
+    function setup_report_table($tablecolumns, $baseurl, $usercount=10)  {
 
         // generate headers (using "header_xxx()" methods below)
         $tableheaders = array();

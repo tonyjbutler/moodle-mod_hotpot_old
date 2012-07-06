@@ -25,8 +25,8 @@ The HotPot module for Moodle 2.x
       - Moodle HQ
 
     Note: This plugin does NOT include the HotPot question import script.
-    If you want the HotPot question import script, it can be downloaded 
-    from either of the following locations: 
+    If you want the HotPot question import script, it can be downloaded
+    from either of the following locations:
 
         (i) the Moodle.org plugins repository
         (ii) http://bateson.kanazawa-gu.ac.jp/moodle/zip/plugins_qformat_hotpot.zip

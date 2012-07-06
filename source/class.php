@@ -594,6 +594,8 @@ class hotpot_source {
      * @return xxx
      */
     function get_filecontents()  {
+        global $DB;
+
         if (isset($this->filecontents)) {
             return $this->filecontents ? true : false;
         }
@@ -616,10 +618,27 @@ class hotpot_source {
                 return false;
             }
 
+            // we want the latest version of the file content
+            // so we force the lifetime to be zero, if it isn't already
+
+            $id = 0;
+            $lifetime = 0;
+            if (method_exists($this->file, 'get_referencefileid')) {
+                if ($id = $this->file->get_referencefileid()) {
+                    if ($lifetime = $this->file->get_referencelifetime()) {
+                        $DB->set_field('files_reference', 'lifetime', 0, array('id' => $id));
+                    }
+                }
+            }
+
             // get the file contents
             if (! $this->filecontents = $this->file->get_content()) {
-                // nothing in the file (or some problem with "file_set_bodycontents")
+                // nothing in the file
                 return false;
+            }
+
+            if ($id && $lifetime) {
+                $DB->set_field('files_reference', 'lifetime', $lifetime, array('id' => $id));
             }
         }
 

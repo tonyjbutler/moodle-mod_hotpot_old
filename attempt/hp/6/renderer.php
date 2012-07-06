@@ -1272,7 +1272,7 @@ class mod_hotpot_attempt_hp_6_renderer extends mod_hotpot_attempt_hp_renderer {
         if ($this->hotpot->stopbutton) {
 
             // get text conversion library
-            $textlib = textlib_get_instance();
+            $textlib = hotpot_get_textlib();
 
             // replace top nav buttons with a single stop button
             if ($this->hotpot->stopbutton==hotpot::STOPBUTTON_LANGPACK) {
@@ -1470,7 +1470,7 @@ class mod_hotpot_attempt_hp_6_renderer extends mod_hotpot_attempt_hp_renderer {
      */
     function filter_text_to_utf8($str, $search) {
         if (preg_match_all($search, $str, $matches, PREG_OFFSET_CAPTURE)) {
-            $textlib = textlib_get_instance();
+            $textlib = hotpot_get_textlib();
             $i_max = count($matches[0]) - 1;
             for ($i=$i_max; $i>=0; $i--) {
                 list($match, $start) = $matches[0][$i];
@@ -1487,7 +1487,7 @@ class mod_hotpot_attempt_hp_6_renderer extends mod_hotpot_attempt_hp_renderer {
      */
     function filter_text_bodycontent()  {
         // convert entities to utf8, filter text and convert back
-        //$textlib = textlib_get_instance();
+        //$textlib = hotpot_get_textlib();
         //$this->bodycontent = $textlib->entities_to_utf8($this->bodycontent);
         //$this->bodycontent = filter_text($this->bodycontent);
         //$this->bodycontent = $textlib->utf8_to_entities($this->bodycontent);
@@ -2729,7 +2729,7 @@ class mod_hotpot_attempt_hp_6_renderer extends mod_hotpot_attempt_hp_renderer {
      */
     function hotpot_keypad_char_value($char)  {
 
-        $textlib = textlib_get_instance();
+        $textlib = hotpot_get_textlib();
         $ord = ord($textlib->entities_to_utf8($char));
 
         // lowercase letters (plain or accented)

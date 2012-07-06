@@ -605,7 +605,7 @@ class hotpot_mediafilter {
         $after  = $match[3];
 
         // get text manipulation library
-        $textlib = textlib_get_instance();
+        $textlib = hotpot_get_textlib();
 
         // entities_to_utf8() is required undo the call to htmlentities(), see MDL-5223
         // this is necessary to allow waitForPlay and autoPlay to be effective on Firefox

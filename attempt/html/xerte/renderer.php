@@ -46,9 +46,9 @@ class mod_hotpot_attempt_html_xerte_renderer extends mod_hotpot_attempt_html_ren
      *
      * @param xxx $quiz (passed by reference)
      */
-    function init(&$quiz) {
+    function init($hotpot) {
         $quiz->usemediafilter = 0;
-        parent::init($quiz);
+        parent::init($hotpot);
     }
 
     /**

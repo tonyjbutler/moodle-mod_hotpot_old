@@ -56,8 +56,8 @@ class mod_hotpot_attempt_hp_6_jmix_renderer extends mod_hotpot_attempt_hp_6_rend
      *
      * @param xxx $quiz (passed by reference)
      */
-    function init(&$quiz)  {
-        parent::init($quiz);
+    function init($hotpot)  {
+        parent::init($hotpot);
         array_push($this->javascripts, 'mod/hotpot/attempt/hp/6/jmix/jmix.js');
     }
 

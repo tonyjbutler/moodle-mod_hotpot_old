@@ -522,7 +522,7 @@ class mod_hotpot_mod_form extends moodleform_mod {
         if ($modinfo = get_fast_modinfo($PAGE->course)) {
 
             // we may need textlib to truncate activity names
-            $textlib = textlib_get_instance();
+            $textlib = hotpot_get_textlib();
 
             switch ($PAGE->course->format) {
                 case 'weeks': $strsection = get_string('strftimedateshort'); break;

@@ -279,7 +279,7 @@ class mod_hotpot_report_analysis_renderer extends mod_hotpot_report_renderer {
      * @param xxx $column
      * @param xxx $response
      */
-    function add_response_to_rawdata(&$table, $attemptid, $column, &$response)  {
+    function add_response_to_rawdata(&$table, $attemptid, $column, $response)  {
         if (! is_array($table->rawdata[$attemptid]->$column)) {
             $table->rawdata[$attemptid]->$column = array();
         }

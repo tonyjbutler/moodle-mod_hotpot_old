@@ -45,7 +45,7 @@ class hotpot_source_html extends hotpot_source {
      * @param xxx $textonly (optional, default=true)
      * @return xxx
      */
-    function get_name($textonly=true)  {
+    function html_get_name($textonly=true)  {
         if (! isset($this->name)) {
             $this->name = '';
             $this->title = '';
@@ -80,7 +80,7 @@ class hotpot_source_html extends hotpot_source {
      * @return xxx
      */
     function get_title()  {
-        return $this->get_name(false);
+        return $this->html_get_name(false);
     }
 
     // returns the introduction text for a quiz

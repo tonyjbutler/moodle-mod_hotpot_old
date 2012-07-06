@@ -29,11 +29,46 @@ defined('MOODLE_INTERNAL') || die();
  * xmldb_hotpot_install
  */
 function xmldb_hotpot_install() {
-    global $DB;
+    global $CFG, $DB;
 
-/// Disable it by default
-//    $DB->set_field('modules', 'visible', 0, array('name'=>'hotpot'));
+    // Disable this module by default
+    // $DB->set_field('modules', 'visible', 0, array('name'=>'hotpot'));
 
-/// Install logging support here
+    // On Moodle 2.0, 2.1 and 2.2, we need to force the text fields to be "long"
+    // if we add LENGTH="long" to install.xml, then we get an error in Moodle 2.3+
+    if (floatval($CFG->release) <= 2.2) {
 
+        // get db manager
+        $dbman = $DB->get_manager();
+
+        $tables = array(
+            'hotpot' => array(
+                new xmldb_field('entrytext', XMLDB_TYPE_TEXT, 'long', null, XMLDB_NOTNULL),
+                new xmldb_field('exittext', XMLDB_TYPE_TEXT, 'long', null, XMLDB_NOTNULL)
+            ),
+            'hotpot_cache' => array(
+                new xmldb_field('content', XMLDB_TYPE_TEXT, 'long', null, XMLDB_NOTNULL)
+            ),
+            'hotpot_details' => array(
+                new xmldb_field('details', XMLDB_TYPE_TEXT, 'long', null, XMLDB_NOTNULL)
+            ),
+            'hotpot_questions' => array(
+                new xmldb_field('name', XMLDB_TYPE_TEXT, 'long', null, XMLDB_NOTNULL)
+            ),
+            'hotpot_strings' => array(
+                new xmldb_field('string', XMLDB_TYPE_TEXT, 'long', null, XMLDB_NOTNULL)
+            )
+        );
+
+        foreach ($tables as $tablename => $fields) {
+            $table = new xmldb_table($tablename);
+            foreach ($fields as $field) {
+                if ($dbman->field_exists($table, $field)) {
+                    $fieldname = $field->getName();
+                    $DB->set_field_select($tablename, $fieldname, '', "$fieldname IS NULL");
+                    $dbman->change_field_type($table, $field);
+                }
+            }
+        }
+    }
 }

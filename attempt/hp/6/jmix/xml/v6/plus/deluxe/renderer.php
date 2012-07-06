@@ -43,8 +43,8 @@ class mod_hotpot_attempt_hp_6_jmix_xml_v6_plus_deluxe_renderer extends mod_hotpo
      *
      * @param xxx $quiz (passed by reference)
      */
-    function init(&$quiz)  {
-        parent::init($quiz);
+    function init($hotpot)  {
+        parent::init($hotpot);
         // prepend templates for this output format
         array_unshift($this->templatesfolders, 'mod/quizport/output/hp/6/jmix/xml/v6/plus/deluxe/templates');
     }
@@ -52,7 +52,7 @@ class mod_hotpot_attempt_hp_6_jmix_xml_v6_plus_deluxe_renderer extends mod_hotpo
     /**
      * fix_bodycontent_DragAndDrop
      */
-    function fix_bodycontent_DragAndDrop() {
+    function fix_bodycontent_DragAndDrop($prefix='', $suffix='') {
         // user-string-1: prefix (optional)
         // user-string-2: suffix (optional)
         $prefix = trim($this->expand_UserDefined1());
@@ -87,7 +87,7 @@ class mod_hotpot_attempt_hp_6_jmix_xml_v6_plus_deluxe_renderer extends mod_hotpo
      *
      * @return xxx
      */
-    function expand_SegmentArray() {
+    function expand_SegmentArray($more_values=array()) {
         // user-string-3: (optional)
         //   distractor words: words, delimited, by, commas, like, this
         //   phrases: (one phrase) [another phrase] {yet another phrase}

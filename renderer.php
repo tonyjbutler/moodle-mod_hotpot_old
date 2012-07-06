@@ -550,7 +550,7 @@ class mod_hotpot_renderer extends plugin_renderer_base {
             if ($hotpot->gradeweighting) {
                 $text = $attempt->score.'%';
                 if ($showreportlinks) {
-                    $url = hotpot::review_url($attempt);
+                    $url = $hotpot->review_url($attempt);
                     $text = html_writer::link($url, $text);
                 }
                 $row->cells[] = new html_table_cell($text);

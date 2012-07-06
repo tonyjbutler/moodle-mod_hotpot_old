@@ -138,7 +138,7 @@ class mod_hotpot_report_renderer extends mod_hotpot_renderer {
         }
 
         // setup the report table
-        $table->setup($tablecolumns, $baseurl);
+        $table->setup_report_table($tablecolumns, $baseurl);
 
         // setup sql to COUNT records
         list($select, $from, $where, $params) = $this->count_sql($userid);
@@ -189,7 +189,7 @@ class mod_hotpot_report_renderer extends mod_hotpot_renderer {
      */
     function count_sql($userid=0, $attemptid=0) {
         $params = array();
-        
+
         $select = 'COUNT(1)';
         $from   = '{hotpot_attempts} ha';
         $where  = 'hotpotid=:hotpotid';
